@@ -19,98 +19,185 @@ st.set_page_config(
 # ==============================================================================
 # CUSTOM CSS & STYLING
 # ==============================================================================
-def load_css():
-    st.markdown("""
+def load_css(theme="Dark"):
+    # Theme colors
+    if theme == "Dark":
+        bg_gradient = "linear-gradient(135deg, #1e1e1e 0%, #0d0d0d 100%)"
+        sidebar_bg = "#111111"
+        card_bg = "#252525"
+        text_color = "#ffffff"
+        border_color = "#333333"
+        secondary_text = "#bbbbbb"
+        accent_blue = "#25F4EE"
+    else:  # Light Mode
+        bg_gradient = "linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)"
+        sidebar_bg = "#ffffff"
+        card_bg = "#ffffff"
+        text_color = "#1a1a1a"
+        border_color = "#dee2e6"
+        secondary_text = "#495057"
+        accent_blue = "#007bff"
+
+    tiktok_red = "#FE2C55"
+
+    st.markdown(f"""
         <style>
         /* Import Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
         /* Global Styles */
-        html, body, [class*="css"] {
+        html, body, [data-testid="stAppViewContainer"] {{
             font-family: 'Inter', sans-serif;
-            color: #ffffff;
-        }
+            color: {text_color} !important;
+        }}
+
+        /* Specific text overrides for Streamlit components */
+        .stMarkdown, .stText, p, span, label, .stMetric, [data-testid="stMetricValue"], [data-testid="stMetricLabel"] {{
+            color: {text_color} !important;
+        }}
 
         /* Gradient Background */
-        .stApp {
-            background: linear-gradient(135deg, #1e1e1e 0%, #0d0d0d 100%);
-        }
+        .stApp {{
+            background: {bg_gradient};
+        }}
 
         /* Sidebar Styling */
-        section[data-testid="stSidebar"] {
-            background-color: #111111;
-            border-right: 1px solid #333;
-        }
+        section[data-testid="stSidebar"] {{
+            background-color: {sidebar_bg} !important;
+            border-right: 1px solid {border_color};
+        }}
+        
+        /* Sidebar Text Overrides */
+        section[data-testid="stSidebar"] .stMarkdown, 
+        section[data-testid="stSidebar"] label,
+        section[data-testid="stSidebar"] p,
+        section[data-testid="stSidebar"] span {{
+            color: {text_color} !important;
+        }}
 
         /* Custom Buttons */
-        .stButton > button {
-            background: linear-gradient(90deg, #FE2C55 0%, #FF0050 100%); /* TikTok Red */
-            color: white;
+        .stButton > button {{
+            background: linear-gradient(90deg, {tiktok_red} 0%, #FF0050 100%);
+            color: white !important;
             border: none;
-            border-radius: 8px;
-            padding: 0.6rem 1.2rem;
+            border-radius: 10px;
+            padding: 0.6rem 1.4rem;
             font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(254, 44, 85, 0.3);
-        }
-        .stButton > button:hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(254, 44, 85, 0.2);
+        }}
+        .stButton > button:hover {{
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(254, 44, 85, 0.5);
-            background: linear-gradient(90deg, #FF0050 0%, #FE2C55 100%);
-        }
+            box-shadow: 0 8px 25px rgba(254, 44, 85, 0.4);
+            filter: brightness(1.1);
+        }}
 
-        /* Secondary Buttons (Outlines) */
-        button[kind="secondary"] {
+        /* Secondary Buttons */
+        button[kind="secondary"] {{
             background: transparent !important;
-            border: 1px solid #FE2C55 !important;
-            color: #FE2C55 !important;
-        }
+            border: 2px solid {tiktok_red} !important;
+            color: {tiktok_red} !important;
+        }}
 
         /* Headers */
-        h1, h2, h3 {
-            color: #ffffff !important;
+        h1, h2, h3, h4, h5, h6 {{
+            color: {text_color} !important;
             font-weight: 700 !important;
-        }
-        h1 {
+        }}
+        h1 {{
             text-align: center;
             margin-bottom: 2rem;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
-        }
+            letter-spacing: -1px;
+        }}
         
-        /* Card-like Containers */
-        .css-1r6slb0, .css-12oz5g7 { 
-            background-color: #252525;
+        /* Custom Card Component */
+        .custom-card {{
+            background-color: {card_bg};
             padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border: 1px solid #333;
-        }
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid {border_color};
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }}
+        .custom-card p {{
+            color: {secondary_text} !important;
+        }}
+        .custom-card:hover {{
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border-color: {tiktok_red}50;
+        }}
 
         /* Expander Styling */
-        .streamlit-expanderHeader {
-            background-color: #252525;
-            color: white;
-            border-radius: 8px;
-        }
+        .streamlit-expanderHeader {{
+            background-color: {card_bg} !important;
+            color: {text_color} !important;
+            border-radius: 12px;
+            border: 1px solid {border_color};
+        }}
         
         /* Data Editor/Frame */
-        [data-testid="stDataFrame"] {
-            border: 1px solid #333;
-            border-radius: 8px;
+        [data-testid="stDataFrame"] {{
+            border: 1px solid {border_color};
+            border-radius: 12px;
             overflow: hidden;
-        }
+            background-color: {card_bg};
+        }}
+
+        /* Metrics */
+        [data-testid="stMetricValue"] {{
+            font-weight: 800 !important;
+            color: {tiktok_red} !important;
+        }}
+        [data-testid="stMetricLabel"] {{
+            color: {secondary_text} !important;
+        }}
+
+        /* Tab Styling */
+        .stTabs [data-baseweb="tab-list"] {{
+            gap: 24px;
+        }}
+        .stTabs [data-baseweb="tab"] {{
+            color: {secondary_text} !important;
+        }}
+        .stTabs [aria-selected="true"] {{
+            border-bottom: 3px solid {tiktok_red} !important;
+            color: {tiktok_red} !important;
+        }}
 
         /* Success/Info Messages */
-        .stSuccess, .stInfo {
-            background-color: #252525;
-            color: white;
-            border-left: 5px solid #FE2C55;
-        }
+        .stSuccess, .stInfo, .stWarning, .stError {{
+            border-radius: 12px;
+            border: none;
+            background-color: {card_bg} !important;
+            color: {text_color} !important;
+            border-left: 5px solid {tiktok_red} !important;
+        }}
+
+        /* Selectbox/Input Styling */
+        div[data-baseweb="select"] > div, div[data-baseweb="input"] > div {{
+            background-color: {card_bg} !important;
+            border-radius: 10px !important;
+            border-color: {border_color} !important;
+            color: {text_color} !important;
+        }}
+        
+        /* Fix for input text visibility */
+        input {{
+            color: {text_color} !important;
+        }}
+        
+        /* Tooltip */
+        .stTooltipIcon {{
+            color: {tiktok_red};
+        }}
 
         </style>
     """, unsafe_allow_html=True)
 
-load_css()
+# Apply selected theme
+load_css(st.session_state.get('theme', 'Dark'))
 
 # ==============================================================================
 # SESSION STATE MANAGEMENT
@@ -119,6 +206,8 @@ if 'df' not in st.session_state:
     st.session_state['df'] = None
 if 'file_name' not in st.session_state:
     st.session_state['file_name'] = "data.csv"
+if 'theme' not in st.session_state:
+    st.session_state['theme'] = "Dark"
 
 # ==============================================================================
 # HELPER FUNCTIONS
@@ -157,11 +246,110 @@ def parse_metric_value(value):
     except:
         return 0.0
 
+def extract_usernames_from_text(text):
+    """
+    Extract usernames using smart heuristics (PPS anchor) and fallback to regex.
+    Returns: (list of usernames, list of debug strings)
+    """
+    debug_log = []
+    
+    if not text:
+        return [], ["No text provided"]
+        
+    lines = [L.strip() for L in text.split('\n') if L.strip()]
+    debug_log.append(f"Found {len(lines)} non-empty lines")
+    
+    smart_matches = []
+    
+    # Strategy 1: PPS Anchor
+    # Pattern: Username is 2 lines above "PPS:"
+    pps_found = False
+    for i, line in enumerate(lines):
+        # Case insensitive check for PPS
+        if "PPS:" in line.upper():
+            pps_found = True
+            if i >= 2:
+                candidate = lines[i-2]
+                # Basic validation: no spaces, decent length, not a number
+                # Usernames shouldn't contain spaces.
+                if ' ' not in candidate and len(candidate) >= 3:
+                    smart_matches.append(candidate)
+                    debug_log.append(f"Line {i} PPS found -> Accepted candidate '{candidate}'")
+                else:
+                    debug_log.append(f"Line {i} PPS found -> Rejected candidate '{candidate}' (invalid format)")
+            else:
+                debug_log.append(f"Line {i} PPS found -> No candidate (index < 2)")
+                
+    if smart_matches:
+        debug_log.append(f"Strategy 1 (PPS) Success: {len(smart_matches)} matches")
+        return sorted(list(set(smart_matches))), debug_log
+        
+    debug_log.append("Strategy 1 (PPS) returned 0 valid matches. Falling back to regex.")
+        
+    # Strategy 2: Fallback Regex with Stronger Filtering
+    pattern = r'@?([a-zA-Z0-9_.]+)'
+    raw_matches = re.findall(pattern, text)
+    debug_log.append(f"Regex found {len(raw_matches)} raw matches")
+    
+    # Expanded blacklist (lowercase for comparison)
+    blacklist_set = {
+        'health', 'male', 'female', 'previously', 'invited', 'fast', 'growing', 
+        'pps:', 'pps', 'womenswear', 'underwear', 'beauty', 'personal', 'care',
+        'sports', 'outdoor', 'ugc', 'level', 'deals', 'next', 'locked', 'mindset',
+        'midlifemomgrace', 'soberafjoe', # Keep these if they are actually names in current text? No, safer to exclude if known noise
+        'chenbo', 'unknown', 'creator', 'video', 'views', 'follower', 'sale', 'revenue'
+    }
+    
+    cleaned_matches = []
+    for m in raw_matches:
+        clean = m.strip()
+        clean_lower = clean.lower()
+        
+        # 1. Length Check
+        if len(clean) < 3:
+            continue
+            
+        # 2. Character Check (Must have at least one letter)
+        if not any(c.isalpha() for c in clean):
+            continue
+            
+        # 3. Blacklist Check (Case Insensitive)
+        if clean_lower in blacklist_set:
+            continue
+            
+        # 4. Symbol Check
+        if any(x in clean for x in ['/', '%', '$', ',']):
+            continue
+            
+        # 5. Number/Stat Check (e.g. 1.4K, 4.1, 5.0)
+        # If it starts with a digit, it's suspicious unless it's mixed with sufficient letters
+        if clean[0].isdigit():
+            # If matches mostly numbers/dots/K/M/B
+            if re.match(r'^[\d.]+[KMBkmb]?$', clean):
+                continue
+                
+        cleaned_matches.append(clean)
+            
+    debug_log.append(f"Strategy 2 (Regex) Final: {len(cleaned_matches)} matches")
+    return sorted(list(set(cleaned_matches))), debug_log
+
 # ==============================================================================
 # SIDEBAR NAVIGATION
 # ==============================================================================
 st.sidebar.image("https://upload.wikimedia.org/wikipedia/en/thumb/a/a9/TikTok_logo.svg/1200px-TikTok_logo.svg.png", width=150)
 st.sidebar.title("Navigation")
+
+# Theme Toggle
+col_t1, col_t2 = st.sidebar.columns([1, 1])
+with col_t1:
+    st.write("🌓 Theme")
+with col_t2:
+    theme_choice = st.toggle("Dark Mode", value=(st.session_state['theme'] == "Dark"), label_visibility="collapsed")
+    new_theme = "Dark" if theme_choice else "Light"
+    if new_theme != st.session_state['theme']:
+        st.session_state['theme'] = new_theme
+        st.rerun()
+
 menu = st.sidebar.radio(
     "",
     ["🏠 Home", "📂 File Manager", "✍️ Data Editor", "📦 Batch Splitter", "🔍 Username Extractor", "📊 Analytics & Processing"],
@@ -181,25 +369,31 @@ if menu == "🏠 Home":
     st.markdown("### The ultimate tool for managing your Affiliate outreach data.")
     
     col1, col2, col3 = st.columns(3)
+    
+    # Theme-dependent card accent colors
+    c1_color = "#25F4EE" if st.session_state['theme'] == "Dark" else "#007bff"
+    c2_color = "#FE2C55"
+    c3_color = "#ffffff" if st.session_state['theme'] == "Dark" else "#1a1a1a"
+
     with col1:
-        st.markdown("""
-        <div style='background-color: #252525; padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #333;'>
-            <h3 style='color: #25F4EE;'>Feature 1</h3>
-            <p>Create & Edit CSVs easily with a spreadsheet-like interface.</p>
+        st.markdown(f"""
+        <div class="custom-card">
+            <h3 style='color: {c1_color};'>✨ Data Editing</h3>
+            <p>Create & Edit CSVs easily with a fluid spreadsheet interface and real-time validation.</p>
         </div>
         """, unsafe_allow_html=True)
     with col2:
-        st.markdown("""
-        <div style='background-color: #252525; padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #333;'>
-            <h3 style='color: #FE2C55;'>Feature 2</h3>
-            <p>Split massive CSV files into smaller chunks for improved workflow.</p>
+        st.markdown(f"""
+        <div class="custom-card">
+            <h3 style='color: {c2_color};'>📦 Batch Manager</h3>
+            <p>Split massive CSV files into optimized chunks for your affiliate outreach campaigns.</p>
         </div>
         """, unsafe_allow_html=True)
     with col3:
-        st.markdown("""
-        <div style='background-color: #252525; padding: 20px; border-radius: 10px; text-align: center; border: 1px solid #333;'>
-            <h3 style='color: #ffffff;'>Feature 3</h3>
-            <p>Extract usernames cleanly from raw TikTok text dumps.</p>
+        st.markdown(f"""
+        <div class="custom-card">
+            <h3 style='color: {c3_color};'>🔍 Smart Extraction</h3>
+            <p>High-confidence username extraction using AI-driven position-based heuristics.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -395,21 +589,12 @@ elif menu == "🔍 Username Extractor":
 
     text_input = st.text_area("Paste text here", height=300, placeholder="@user1 some text @user2 ...")
 
-    if st.button("✨ Extract Usernames", type="primary"):
+    if st.button("✨ Extract Usernames (v2)", type="primary"):
         if text_input.strip():
-            # Regex pattern
-            pattern = r'@?([a-zA-Z0-9_.]+)'
-            matches = re.findall(pattern, text_input)
-
-            # Clean and filter
-            valid_usernames = []
-            for m in matches:
-                clean_name = m.strip()
-                # Basic validation: length >= 3 and has at least one letter
-                if len(clean_name) >= 3 and any(c.isalpha() for c in clean_name):
-                    valid_usernames.append(clean_name)
+            unique_users, debug_log = extract_usernames_from_text(text_input)
             
-            unique_users = sorted(list(set(valid_usernames)))
+            with st.expander("🛠️ Debug Logs (Check this if results are wrong)"):
+                st.code("\n".join(debug_log))
             
             if unique_users:
                 st.success(f"Found {len(unique_users)} unique usernames!")
